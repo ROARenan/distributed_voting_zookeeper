@@ -11,6 +11,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.Watcher.Event;
+import org.apache.zookeeper.data.Stat;
 
 /**
  * Implementação de Leader Election usando ZooKeeper
@@ -64,7 +65,7 @@ public class VotingLeaderElection implements Watcher {
     currentPath = zk.create(prefix, Integer.toString(nodeId).getBytes(),
         Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
 
-    System.out.println("🎯 Election: Nó " + nodeId + " participando em " + currentPath);
+    System.out.println("Election: Nó " + nodeId + " participando em " + currentPath);
 
     return checkLeadership();
   }
@@ -113,7 +114,7 @@ public class VotingLeaderElection implements Watcher {
         zk.setData(leaderPath, Integer.toString(nodeId).getBytes(), -1);
       }
 
-      System.out.println("👑 Election: Nó " + nodeId + " ELEITO COMO LÍDER!");
+      System.out.println("Election: Nó " + nodeId + " ELEITO COMO LÍDER!");
 
     } catch (KeeperException e) {
       System.err.println("Erro ao criar nó de líder: " + e.getMessage());
@@ -132,7 +133,7 @@ public class VotingLeaderElection implements Watcher {
         // Candidato anterior já saiu, verificar liderança novamente
         checkLeadership();
       } else {
-        System.out.println("👀 Election: Observando candidato anterior " + previousCandidate);
+        System.out.println("Election: Observando candidato anterior (checking leader)" + previousCandidate);
       }
     }
   }
@@ -174,7 +175,7 @@ public class VotingLeaderElection implements Watcher {
       isLeader = false;
     }
 
-    System.out.println("🚪 Election: Nó " + nodeId + " abandonou a eleição");
+    System.out.println("Election: Nó " + nodeId + " abandonou a eleição");
   }
 
   @Override

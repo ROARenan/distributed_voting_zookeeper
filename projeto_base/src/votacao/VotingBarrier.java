@@ -59,17 +59,17 @@ public class VotingBarrier implements Watcher {
     String path = zk.create(root + "/" + name + "-", new byte[0],
         Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
 
-    System.out.println("🚧 Barrier: Nó criado em " + path);
+    System.out.println("Barrier: Nó criado em " + path);
 
     while (true) {
       synchronized (mutex) {
         List<String> list = zk.getChildren(root, true);
 
         if (list.size() < size) {
-          System.out.println("⏳ Barrier: Aguardando... (" + list.size() + "/" + size + " nós)");
+          System.out.println("Barrier: Aguardando... (" + list.size() + "/" + size + " nós)");
           mutex.wait();
         } else {
-          System.out.println("✅ Barrier: Todos os nós estão prontos! Prosseguindo...");
+          System.out.println("Barrier: Todos os nós estão prontos! Prosseguindo...");
           return true;
         }
       }
@@ -86,7 +86,7 @@ public class VotingBarrier implements Watcher {
     for (String child : list) {
       if (child.startsWith(name)) {
         zk.delete(root + "/" + child, -1);
-        System.out.println("🚪 Barrier: Saí do barrier");
+        System.out.println("Barrier: Saí da barrier");
         break;
       }
     }

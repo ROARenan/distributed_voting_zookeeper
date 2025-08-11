@@ -53,10 +53,10 @@ public class VotingQueue implements Watcher {
     try {
       String path = zk.create(root + "/voto-", voto.getBytes(),
           Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
-      System.out.println("📝 Queue: Voto '" + voto + "' adicionado em " + path);
+      System.out.println("Queue: Voto '" + voto + "' adicionado em " + path);
       return true;
     } catch (KeeperException e) {
-      System.err.println("Erro ao adicionar voto à fila: " + e.getMessage());
+      System.err.println("Erro ao adicionar voto à queue: " + e.getMessage());
       return false;
     }
   }
@@ -98,7 +98,7 @@ public class VotingQueue implements Watcher {
           // Remover o voto da fila
           zk.delete(fullPath, -1);
 
-          System.out.println("📤 Queue: Voto '" + voto + "' consumido de " + fullPath);
+          System.out.println("Queue: Voto '" + voto + "' consumido de " + fullPath);
           return voto;
 
         } catch (KeeperException.NoNodeException e) {
@@ -131,7 +131,7 @@ public class VotingQueue implements Watcher {
   public void notifyResult(String message) throws KeeperException, InterruptedException {
     zk.create(root + "/resultado-", message.getBytes(),
         Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
-    System.out.println("📢 Queue: Resultado notificado - " + message);
+    System.out.println("Queue: Resultado notificado - " + message);
   }
 
   @Override

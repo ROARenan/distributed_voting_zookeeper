@@ -11,6 +11,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.Watcher.Event;
+import org.apache.zookeeper.data.Stat;
 
 /**
  * Implementação de Lock distribuído usando ZooKeeper
@@ -75,7 +76,7 @@ public class VotingLock implements Watcher {
       if (children.get(i).equals(myNode)) {
         if (i == 0) {
           // Este é o primeiro nó - tem o lock
-          System.out.println("🔒 Lock: Adquirido com sucesso!");
+          System.out.println("Lock: Adquirido com sucesso!");
           return true;
         } else {
           // Aguardar o nó anterior
@@ -97,7 +98,7 @@ public class VotingLock implements Watcher {
     synchronized (mutex) {
       Stat s = zk.exists(previousPath, this);
       if (s != null) {
-        System.out.println("⏳ Lock: Aguardando liberação...");
+        System.out.println("Lock: Aguardando liberação...");
         mutex.wait();
         return checkLock(); // Verificar novamente após notificação
       } else {
@@ -113,7 +114,7 @@ public class VotingLock implements Watcher {
     if (currentPath != null) {
       zk.delete(currentPath, -1);
       currentPath = null;
-      System.out.println("🔓 Lock: Liberado com sucesso!");
+      System.out.println("Lock: Liberado com sucesso!");
     }
   }
 
