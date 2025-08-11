@@ -66,6 +66,8 @@ projeto_base/
 
 ## Como executar
 
+**Primeiramente, certifique que os caminhos nos `.sh`correspondem ao da sua máquina!**
+
 ### Opção 1: Demonstração simples (recomendada para começar)
 
 Está execução não roda zookeeper e tem apenas o intuito de demonstrar o sistema de votação.

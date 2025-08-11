@@ -10,7 +10,7 @@ echo "=========================================="
 echo ""
 
 # Configurar caminhos
-export PROJECT_ROOT="/home/ferdinando-longoni/tmp-ufabc/distributed_voting_zookeeper"
+export PROJECT_ROOT="/path/to/project/distributed_voting_zookeeper"
 export ZK_HOME="$PROJECT_ROOT/apache-zookeeper-3.9.3"
 export PROJETO_BASE="$PROJECT_ROOT/projeto_base"
 
