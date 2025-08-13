@@ -1,4 +1,3 @@
-
 echo ""
 echo " Limpando processos..."
 

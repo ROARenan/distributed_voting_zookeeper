@@ -279,9 +279,14 @@ public class SistemaVotacao {
 
   /** Garante que um znode persistente exista */
   private void ensurePath(String path) throws KeeperException, InterruptedException {
-    Stat s = zk.exists(path, false);
-    if (s == null) {
-      zk.create(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+    try {
+      Stat s = zk.exists(path, false);
+      if (s == null) {
+        zk.create(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+      }
+    } catch (KeeperException.NodeExistsException e) {
+      // O nó já existe, está tudo bem
+      System.out.println("Path " + path + " já existe, continuando...");
     }
   }
 
