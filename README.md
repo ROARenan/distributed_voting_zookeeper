@@ -78,38 +78,6 @@ cd projeto_base
 ./demo_completo.sh
 ```
 
-## Comportamentos esperados
-
-### Quando o nó é eleito líder
-
-```
-ELEITO COMO COORDENADOR
-Adicionando votos à fila...
-Voto 'A' adicionado
-...
-Liberando barreira - urna fechada
-Iniciando processamento de votos
-...
-Compilando resultado final...
-RESULTADO FINAL:
-Candidato A: 5 votos
-Candidato B: 3 votos
-Candidato C: 2 votos
-VENCEDOR: Candidato A
-```
-
-### Quando o nó é participante
-
-```
-Aguardando como participante...
-Aguardando liberação da urna...
-Urna liberada! Iniciando contagem...
-Adquirindo lock para processamento...
-Processado voto: B (Total local: {B=1})
-...
-Aguardando resultado final do coordenador...
-```
-
 ## Conceitos ZooKeeper demonstrados
 
 ### **Barriers** (`VotingBarrier.java`)
