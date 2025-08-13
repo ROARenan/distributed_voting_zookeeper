@@ -10,7 +10,7 @@ echo "=========================================="
 echo ""
 
 # Configurar caminhos
-export PROJECT_ROOT="/path/to/project/distributed_voting_zookeeper"
+export PROJECT_ROOT="/home/roa/Downloads/distributed_voting_zookeeper"
 export ZK_HOME="$PROJECT_ROOT/apache-zookeeper-3.9.3"
 export PROJETO_BASE="$PROJECT_ROOT/projeto_base"
 
@@ -32,7 +32,7 @@ echo ""
 
 # Função para verificar se ZooKeeper está rodando
 check_zookeeper() {
-    echo "🔍 Verificando se ZooKeeper está rodando..."
+    echo "Verificando se ZooKeeper está rodando..."
     
     # Tentar conectar na porta 2181
     if nc -z localhost 2181 2>/dev/null; then
@@ -121,18 +121,35 @@ run_voting_node() {
 monitor_logs() {
     echo ""
     echo " Monitorando execução..."
-    echo "   Pressione Ctrl+C para parar o monitoramento"
+    echo "   Aguardando finalização automática dos processos..."
     echo ""
     
     # Monitorar logs de todos os nós
     tail -f /tmp/voting_node_*.log 2>/dev/null &
     local tail_pid=$!
     
-    # Aguardar input do usuário
-    read -p "Pressione Enter para parar o monitoramento..."
+    # Aguardar processos terminarem naturalmente (máximo 30 segundos)
+    local timeout=30
+    local elapsed=0
+    
+    while [ $elapsed -lt $timeout ]; do
+        # Verificar se ainda há processos Java rodando
+        if ! pgrep -f "src.votacao.SistemaVotacao" > /dev/null; then
+            echo ""
+            echo " Todos os processos de votação finalizaram naturalmente."
+            break
+        fi
+        sleep 2
+        elapsed=$((elapsed + 2))
+    done
     
     # Parar monitoramento
     kill $tail_pid 2>/dev/null
+    
+    if [ $elapsed -ge $timeout ]; then
+        echo ""
+        echo " Timeout atingido - forçando finalização dos processos."
+    fi
 }
 
 # Função para limpar processos
@@ -155,14 +172,14 @@ main() {
     # Verificar/Iniciar ZooKeeper
     if ! check_zookeeper; then
         if ! start_zookeeper; then
-            echo "❌ Falha ao iniciar ZooKeeper. Abortando."
+            echo "Falha ao iniciar ZooKeeper. Abortando."
             exit 1
         fi
     fi
     
     # Compilar projeto
     if ! compile_project; then
-        echo "❌ Falha na compilação. Abortando."
+        echo "Falha na compilação. Abortando."
         cleanup
         exit 1
     fi
