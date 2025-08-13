@@ -51,12 +51,12 @@ public class SistemaVotacao {
 
   public SistemaVotacao() {
     this.nodeId = new Random().nextInt(10000);
-    System.out.println("🗳️  Iniciando nó de votação ID: " + nodeId);
+    System.out.println("Iniciando nó de votação ID: " + nodeId);
   }
 
   /** Inicializa todos os componentes do sistema distribuído */
   public void inicializar() throws IOException, KeeperException, InterruptedException {
-    System.out.println("📡 Conectando ao ZooKeeper...");
+    System.out.println("Conectando ao ZooKeeper...");
 
     // Conexão própria do SistemaVotacao (para paths auxiliares)
     this.zk = connectZk(ZK_ADDRESS);
@@ -65,10 +65,10 @@ public class SistemaVotacao {
     ensurePath(RESULTADO_PATH);
 
     // Inicializar componentes distribuídos (suas classes atuais)
-    barrier   = new VotingBarrier(ZK_ADDRESS, BARRIER_PATH, 3); // 3 nós para iniciar
-    queue     = new VotingQueue(ZK_ADDRESS, QUEUE_PATH);
-    lock      = new VotingLock(ZK_ADDRESS, LOCK_PATH);
-    election  = new VotingLeaderElection(ZK_ADDRESS, ELECTION_PATH, LEADER_PATH, nodeId);
+    barrier = new VotingBarrier(ZK_ADDRESS, BARRIER_PATH, 3); // 3 nós para iniciar
+    queue = new VotingQueue(ZK_ADDRESS, QUEUE_PATH);
+    lock = new VotingLock(ZK_ADDRESS, LOCK_PATH);
+    election = new VotingLeaderElection(ZK_ADDRESS, ELECTION_PATH, LEADER_PATH, nodeId);
 
     System.out.println("Componentes inicializados com sucesso.");
   }
@@ -78,7 +78,7 @@ public class SistemaVotacao {
     System.out.println("\nIniciando processo de votação distribuída...");
 
     // 1) Eleição de líder
-    System.out.println("🎯 Participando da eleição de coordenador...");
+    System.out.println("Participando da eleição de coordenador...");
     boolean isLeader = election.elect();
 
     if (isLeader) {
@@ -136,7 +136,7 @@ public class SistemaVotacao {
 
   /** Processa votos da fila com lock distribuído */
   private void processarVotos() throws KeeperException, InterruptedException {
-    System.out.println("🔄 Iniciando processamento de votos...");
+    System.out.println("Iniciando processamento de votos...");
 
     while (true) {
       if (lock.acquire()) {
@@ -225,7 +225,7 @@ public class SistemaVotacao {
     System.out.println("--------------------------------");
     System.out.println("Total de votos processados: " + total);
     if (vencedor != null) {
-      System.out.println("🏆 VENCEDOR: Candidato " + vencedor + " com " + max + " votos.");
+      System.out.println("VENCEDOR: Candidato " + vencedor + " com " + max + " votos.");
     }
     System.out.println("================================");
     System.out.println("Votação finalizada com sucesso. =)");
@@ -235,7 +235,8 @@ public class SistemaVotacao {
   private static byte[] serializeContagem(Map<String, Integer> m) {
     StringBuilder sb = new StringBuilder();
     for (Map.Entry<String, Integer> e : m.entrySet()) {
-      if (sb.length() > 0) sb.append(';');
+      if (sb.length() > 0)
+        sb.append(';');
       sb.append(e.getKey()).append('=').append(e.getValue());
     }
     return sb.toString().getBytes(StandardCharsets.UTF_8);
@@ -244,15 +245,18 @@ public class SistemaVotacao {
   /** Deserializa "A=3;B=1;..." */
   private static Map<String, Integer> deserializeContagem(byte[] data) {
     Map<String, Integer> m = new HashMap<>();
-    if (data == null || data.length == 0) return m;
+    if (data == null || data.length == 0)
+      return m;
     String s = new String(data, StandardCharsets.UTF_8);
     for (String part : s.split(";")) {
-      if (part.isEmpty()) continue;
+      if (part.isEmpty())
+        continue;
       String[] kv = part.split("=", 2);
       if (kv.length == 2) {
         try {
           m.put(kv[0], Integer.parseInt(kv[1]));
-        } catch (NumberFormatException ignore) {}
+        } catch (NumberFormatException ignore) {
+        }
       }
     }
     return m;
@@ -262,7 +266,8 @@ public class SistemaVotacao {
   private static ZooKeeper connectZk(String address) throws IOException, InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     ZooKeeper zk = new ZooKeeper(address, 3000, new Watcher() {
-      @Override public void process(WatchedEvent event) {
+      @Override
+      public void process(WatchedEvent event) {
         if (event.getState() == Event.KeeperState.SyncConnected) {
           latch.countDown();
         }
